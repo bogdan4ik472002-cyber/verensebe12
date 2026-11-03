@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#0b1728">
 <title>MUSIC EDUCATION — обучение музыке</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="image" href="/assets/hero-poster.jpg">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&display=swap">
+<link rel="preload" href="/assets/fonts/unbounded-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/unbounded-cyrillic-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
+@font-face{font-family:'Unbounded';font-style:normal;font-weight:500;font-display:swap;src:url(/assets/fonts/unbounded-cyrillic-500-normal.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Unbounded';font-style:normal;font-weight:500;font-display:swap;src:url(/assets/fonts/unbounded-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Unbounded';font-style:normal;font-weight:700;font-display:swap;src:url(/assets/fonts/unbounded-cyrillic-700-normal.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Unbounded';font-style:normal;font-weight:700;font-display:swap;src:url(/assets/fonts/unbounded-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Unbounded';font-style:normal;font-weight:900;font-display:swap;src:url(/assets/fonts/unbounded-cyrillic-900-normal.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Unbounded';font-style:normal;font-weight:900;font-display:swap;src:url(/assets/fonts/unbounded-latin-900-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{--bg:#081321;--panel:#101f32;--panel2:#172a40;--line:#263d56;--text:#f4f8ff;--muted:#a8bad0;--blue:#55a8ff;--cyan:#65ddf5;--orange:#ff9b5e;--radius:20px}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:92px;background:radial-gradient(ellipse at 90% -10%,rgba(50,139,220,.28) 0,transparent 38%),radial-gradient(ellipse at 0% 38%,rgba(28,93,160,.16) 0,transparent 34%),var(--bg)}header{padding:23px 20px 14px;display:flex;align-items:center;justify-content:space-between}.logo{font-size:25px;font-weight:950;letter-spacing:-1.5px}.logo span{color:var(--blue)}.tag{font-size:10px;letter-spacing:1.5px;color:var(--muted);border:1px solid var(--line);padding:6px 9px;border-radius:30px}.hero{padding:20px 20px 22px}.eyebrow{color:var(--blue);font-size:11px;letter-spacing:2px;font-weight:800}.hero h1{font-size:38px;line-height:1.02;letter-spacing:-1.7px;margin:12px 0}.hero p{color:#b9bdc3;max-width:390px;margin:0 0 22px}.btn{border:0;background:linear-gradient(105deg,var(--blue),var(--cyan));color:#061321;font-weight:850;border-radius:13px;padding:14px 17px;width:100%;transition:.15s}.btn:active{transform:scale(.98)}.btn.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}.btn.small{width:auto;padding:10px 13px;font-size:13px}.hero-art{margin:0 20px;height:150px;border-radius:20px;background:linear-gradient(115deg,rgba(9,10,10,.15),rgba(9,10,10,.9)),url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1200&q=85') center 53%/cover;display:flex;align-items:end;padding:15px}.hero-art span{font-size:11px;letter-spacing:2px;color:#e7e9e8}.section{padding:25px 20px 0}.section-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:14px}.section h2{font-size:21px;letter-spacing:-.6px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px}.levels{display:grid;gap:10px}.level,.course,.feature{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:15px}.level{display:flex;gap:13px;align-items:center;text-align:left;color:var(--text);width:100%}.num{width:42px;height:42px;flex:0 0 42px;border-radius:13px;background:linear-gradient(135deg,rgba(85,168,255,.2),rgba(101,221,245,.12));color:var(--cyan);display:grid;place-items:center;font-weight:900}.level b,.course b{display:block;font-size:15px}.level small,.course small{color:var(--muted);font-size:12px}.arrow{margin-left:auto;color:var(--blue);font-size:20px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.feature strong{display:block;font-size:14px;margin:8px 0 4px}.feature p{font-size:12px;color:var(--muted);margin:0}.feature .ico{font-size:22px}.course{margin-bottom:10px}.course-top{display:flex;justify-content:space-between;gap:10px}.pill{font-size:10px;color:var(--blue);border:1px solid rgba(255,155,94,.35);padding:4px 8px;border-radius:20px;white-space:nowrap}.price{font-size:22px;font-weight:900;margin:12px 0 2px}.price em{font-style:normal;font-size:11px;color:var(--muted);font-weight:500}.muted{color:var(--muted)}.mentor{display:flex;gap:14px;align-items:center}.avatar{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:grid;place-items:center;color:#071522;font-size:21px;font-weight:950}.mentor p{margin:4px 0 0;color:var(--muted);font-size:12px}.quote{font-size:13px;color:#d6d8dc;border-left:2px solid var(--orange);padding-left:12px;margin-top:13px}.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);background:rgba(8,19,33,.96);backdrop-filter:blur(18px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);padding:10px 8px calc(10px + env(safe-area-inset-bottom));z-index:5}.nav button{border:0;background:none;color:#81858d;font-size:10px;padding:5px}.nav button span{display:block;font-size:19px;margin-bottom:3px}.nav button.active{color:var(--blue)}.page{display:none}.page.active{display:block}.back{border:0;background:none;color:var(--blue);padding:12px 20px}.detail{padding:5px 20px}.detail h1{font-size:30px;line-height:1.05;letter-spacing:-1px}.list{padding-left:18px;color:#c5c8ce}.list li{margin:8px 0}.form{display:grid;gap:11px;margin-top:16px}.field{width:100%;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:14px;border-radius:12px;outline:none}.field:focus{border-color:var(--blue)}textarea.field{min-height:90px;resize:vertical}.notice{background:rgba(255,155,94,.10);color:#ffd0b2;border:1px solid rgba(255,155,94,.3);padding:12px;border-radius:12px;font-size:12px;margin-top:12px}.admin-card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:10px}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stats .admin-card strong{font-size:24px;display:block;color:var(--blue)}.toast{position:fixed;bottom:95px;left:50%;transform:translate(-50%,20px);opacity:0;background:linear-gradient(100deg,var(--blue),var(--cyan));color:#061321;padding:11px 16px;border-radius:12px;font-size:13px;font-weight:800;transition:.2s;z-index:10}.toast.show{opacity:1;transform:translate(-50%,0)}.empty{color:var(--muted);font-size:13px;padding:15px 0}
 
 .logo{font-size:24px;letter-spacing:-.8px}.logo span{color:var(--cyan)}.brandline{font-size:10px;letter-spacing:2px;color:var(--orange);font-weight:800}.hero-art{background:linear-gradient(115deg,rgba(4,13,24,.08),rgba(4,13,24,.82)),url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1200&q=85') center 53%/cover}.nav button.active{color:var(--cyan)}.eyebrow{color:var(--cyan)}.accent-orange{color:var(--orange)}.free-badge{display:inline-block;background:linear-gradient(100deg,var(--orange),#ffc18c);color:#20140d;border-radius:30px;padding:6px 10px;font-size:11px;font-weight:900;letter-spacing:.3px}.booking-hero{background:linear-gradient(135deg,rgba(42,126,205,.22),rgba(255,155,94,.12));border:1px solid var(--line);border-radius:20px;padding:18px;margin-top:16px}.booking-hero h3{font-size:23px;line-height:1.1;margin:12px 0 8px}.about-footer{padding-bottom:28px}.about-footer .feature{margin-top:10px}
@@ -61,14 +62,15 @@ header{padding:26px 22px 8px!important}.logo{font-size:21px!important;white-spac
 </section>
 <section id="booking" class="page"><div class="section">
 <div id="bookStep1"><div class="eyebrow">ЗАПИСЬ</div><h2 class="hd">Записаться на первый <span class="grn">бесплатный</span> урок</h2>
-<p class="intro">Мы разбираем каждого артиста индивидуально: у каждого свой путь и свой звук. На первом занятии знакомимся и понимаем, подходим ли мы друг другу.</p>
+<p class="intro">Познакомимся и поймём, с какого уровня начать.</p>
 <div class="levels">
-<button class="level ph lv1" onclick="pickLevel('start')"><div class="num">01</div><div class="lvb"><b>Я только начинаю</b><ul class="topics"><li>Как записывать себя в FL Studio</li><li>Как скачать FL Studio</li><li>Как поставить плагины в FL Studio</li></ul></div><div class="arrow">›</div></button>
-<button class="level ph lv2" onclick="pickLevel('beginner')"><div class="num">02</div><div class="lvb"><b>Уже пробовал записываться</b><ul class="topics"><li>Как найти свой стиль</li><li>Как выгрузить трек на все площадки</li><li>Как сводить свои треки</li></ul></div><div class="arrow">›</div></button>
-<button class="level ph lv3" onclick="pickLevel('artist')"><div class="num">03</div><div class="lvb"><b>Я действующий артист</b><ul class="topics"><li>Как построить позиционирование бренда?</li><li>Как мне продвигать свою музыку?</li><li>Как организовать свой концерт?</li></ul></div><div class="arrow">›</div></button>
+<button class="level ph lv1" onclick="pickLevel('start')"><div class="lvb"><span class="lv-tag">Новичок</span><b>«Хочу начать, но не знаю с чего»</b><ul class="topics"><li>Сетап без лишних трат</li><li>Запишешь себя сам</li><li>Разбор демок каждую неделю</li></ul><div class="lv-res"><span>Результат:</span> первая демка</div></div><div class="arrow">›</div></button>
+<button class="level ph lv2" onclick="pickLevel('beginner')"><div class="lvb"><span class="lv-tag">Продвинутый</span><b>«Пишусь, но звучу как все»</b><ul class="topics"><li>Найдём твой стиль</li><li>Пресет на вокал под тебя</li><li>Релиз на всех площадках</li></ul><div class="lv-res"><span>Результат:</span> свой звук и релиз</div></div><div class="arrow">›</div></button>
+<button class="level ph lv3" onclick="pickLevel('artist')"><div class="lvb"><span class="lv-tag">Профи</span><b>«Музыка есть, но её не слышат»</b><ul class="topics"><li>Позиционирование артиста</li><li>Продвижение без «наугад»</li><li>Концерты и коннекты</li></ul><div class="lv-res"><span>Результат:</span> рабочая стратегия</div></div><div class="arrow">›</div></button>
 </div></div>
 <div id="bookStep2" style="display:none"><button class="back" style="padding-left:0!important" onclick="resetLevel()">← Выбрать другой уровень</button>
 <h2 class="hd" style="margin-top:4px!important">Заполни данные</h2><p class="muted" style="margin:0 0 4px">Первый урок бесплатно. После заявки напишем тебе в Telegram.</p>
+<div id="lvPick" class="lv-pick"></div>
 <form class="form" id="bookForm" onsubmit="submitForm(event)">
 <label class="flabel"><span class="fn">1</span>ФИО</label><input class="field" id="name" autocomplete="name" placeholder="Имя и фамилия" required>
 <label class="flabel"><span class="fn">2</span>Ник в Telegram или телефон</label><input class="field" id="contact" autocapitalize="none" autocorrect="off" placeholder="@username" required>
@@ -95,14 +97,14 @@ header{padding:26px 22px 8px!important}.logo{font-size:21px!important;white-spac
 <section id="artist" class="page"><div class="section"><button class="back" style="padding-left:0!important" onclick="go('wave')">← Волна</button><div id="arBody"></div></div></section>
 <section id="admin" class="page"><div class="section"><button class="back" style="padding-left:0!important" onclick="go('profile')">← Профиль</button><div class="eyebrow">ТОЛЬКО ДЛЯ НАСТАВНИКА</div><h2 style="margin:8px 0">Панель наставника</h2><p class="sub">Все заявки из приложения. Новые сверху.</p>
 <div class="stats" style="margin-top:16px"><div class="admin-card"><strong id="stTotal">—</strong><span class="sub">Заявок всего</span></div><div class="admin-card"><strong id="stToday">—</strong><span class="sub">За сегодня</span></div><div class="admin-card"><strong id="stWeek">—</strong><span class="sub">За 7 дней</span></div><div class="admin-card"><strong id="stUsers">—</strong><span class="sub">Учеников в боте</span></div></div>
-<div class="chips" style="margin-top:18px"><button class="chip on" data-lv="" onclick="setLeadFilter(this)">Все</button><button class="chip" data-lv="Я только начинаю" onclick="setLeadFilter(this)">01</button><button class="chip" data-lv="Уже пробовал записываться" onclick="setLeadFilter(this)">02</button><button class="chip" data-lv="Я действующий артист" onclick="setLeadFilter(this)">03</button><button class="chip" data-lv="Студия SO LOUD · Королёв" onclick="setLeadFilter(this)">Студия</button></div>
+<div class="chips" style="margin-top:18px"><button class="chip on" data-lv="" onclick="setLeadFilter(this)">Все</button><button class="chip" data-lv="Новичок" onclick="setLeadFilter(this)">Новичок</button><button class="chip" data-lv="Продвинутый" onclick="setLeadFilter(this)">Продвинутый</button><button class="chip" data-lv="Профи" onclick="setLeadFilter(this)">Профи</button><button class="chip" data-lv="Студия SO LOUD · Королёв" onclick="setLeadFilter(this)">Студия</button></div>
 <div id="leads"><div class="empty">Загружаю…</div></div><button class="btn secondary" onclick="renderLeads()">↻ Обновить</button></div></section>
 </main>
 <nav class="nav"><button class="active" data-page="home" onclick="go('home')"><span>⌂</span>Главная</button><button data-page="booking" onclick="go('booking')"><span>✎</span>Запись</button><button data-page="wave" onclick="go('wave')"><span>♫</span>Волна</button><button data-page="profile" onclick="go('profile')"><span>◉</span>Профиль</button></nav>
 <div id="upModal" class="modal" onclick="if(event.target===this)closeUpload()"><form class="sheet" onsubmit="submitTrack(event)"><div class="sh-top"><h2>Трек в Волну</h2><button type="button" class="x" onclick="closeUpload()">✕</button></div>
 <label class="flabel">Название трека</label><input class="field" id="upTitle" required maxlength="60" placeholder="Название">
 <label class="flabel">Имя артиста</label><input class="field" id="upNick" required maxlength="40" placeholder="Как подписать трек">
-<label class="flabel">Твой уровень</label><select class="field" id="upLevel"><option value="start">Я только начинаю</option><option value="beginner">Уже пробовал записываться</option><option value="artist">Я действующий артист</option></select>
+<label class="flabel">Твой уровень</label><select class="field" id="upLevel"><option value="start">Новичок</option><option value="beginner">Продвинутый</option><option value="artist">Профи</option></select>
 <label class="flabel">Трек · mp3, wav, m4a до 20 МБ</label><input class="field" id="upFile" type="file" accept="audio/*,.mp3,.wav,.m4a,.flac,.aac,.ogg" required>
 <label class="flabel">Обложка · по желанию</label><input class="field" id="upCover" type="file" accept="image/*" onchange="openCrop(this.files[0])">
 <div id="crop" class="crop" style="display:none"><div class="crop-box" id="cropBox"><img id="cropImg" alt="" draggable="false"><div class="crop-grid"></div></div>
@@ -151,15 +153,19 @@ document.addEventListener('visibilitychange',function(){var home=document.getEle
 hv.muted=false;var p=hv.play();if(p&&p.then){p.then(function(){unlocked=true}).catch(function(){hv.muted=true;hv.play().catch(function(){})})}
 })();
 const el=id=>document.getElementById(id);
-const LVS={start:"START",beginner:"BUILD",artist:"GROW"};
+const LVS={start:"НОВИЧОК",beginner:"ПРОДВИНУТЫЙ",artist:"ПРОФИ"};
 const aud=new Audio();aud.preload="none";
 function toast(m){const t=el("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2300)}
 function ls(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 function renderProfile(){const a=getLeads();el("pgStage").textContent=a.length?a[0].format:"Пока не выбран";el("pgHint").textContent=a.length?("Заявка отправлена: "+a[0].date):"Оставь заявку, чтобы начать"}
 function go(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));el(id).classList.add('active');const nav={wave:'wave',artist:'wave',admin:'profile'}[id]||id;document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===nav));window.scrollTo(0,0);if(id==='admin')renderLeads();if(id==='profile')renderProfile();if(id==='wave')loadFeed();if(window.heroActive)heroActive(id==='home')}
-const LV={start:"Я только начинаю",beginner:"Уже пробовал записываться",artist:"Я действующий артист",studio:"Студия SO LOUD · Королёв"};let curLv=null;
-function pickLevel(k){curLv=k;go("booking");document.getElementById("bookStep1").style.display="none";document.getElementById("bookStep2").style.display="flex";setTimeout(function(){var n=document.getElementById("name");if(n)n.focus({preventScroll:true})},50)}
+const LV={start:"Новичок",beginner:"Продвинутый",artist:"Профи",studio:"Студия SO LOUD · Королёв"};
+const LV_OLD={"Я только начинаю":"Новичок","Уже пробовал записываться":"Продвинутый","Я действующий артист":"Профи"};
+const LV_INFO={start:{res:"первая демка, записанная своими руками",plan:["Знакомство — бесплатно","С чего начать: какое оборудование нужно","Ставим FL Studio","Ставим плагины","Записываем тебя в FL Studio","Дальше — новые темы и еженедельный разбор твоих демок"]},
+ beginner:{res:"свой звук и первый релиз на площадках",plan:["Знакомство — бесплатно","Ищем твой стиль","Пресет на вокал под тебя","Выгрузка трека на площадки","Сниппеты и подача релиза"]},
+ artist:{res:"понятная стратегия продвижения, которая работает на тебя",plan:["Знакомство и погружение в тебя как артиста — бесплатно","Позиционирование","Тестируем схемы продвижения","Свой концерт","Коннекты и вход в индустрию"]}};let curLv=null;
+function pickLevel(k){curLv=k;el("lvPick").innerHTML='<span class="lv-tag">'+LV[k]+'</span>';go("booking");document.getElementById("bookStep1").style.display="none";document.getElementById("bookStep2").style.display="flex";setTimeout(function(){var n=document.getElementById("name");if(n)n.focus({preventScroll:true})},50)}
 function resetLevel(){curLv=null;document.getElementById("bookStep1").style.display="flex";document.getElementById("bookStep2").style.display="none";window.scrollTo(0,0)}
 
 function getLeads(){try{return JSON.parse(localStorage.getItem('music_education_leads')||'[]')}catch(e){return []}}
@@ -182,7 +188,7 @@ function renderLeads(){const box=el("leads");if(!TG||!ME||!ME.is_admin){box.inne
  .then(d=>{LEADS=d.leads||[];el("stTotal").textContent=d.stats.total;el("stToday").textContent=d.stats.today;el("stWeek").textContent=d.stats.week;el("stUsers").textContent=d.stats.users;drawLeads()})
  .catch(()=>{box.innerHTML='<div class="empty">Не удалось загрузить заявки.</div>'})}
 function setLeadFilter(b){LEAD_LV=b.dataset.lv;document.querySelectorAll('#admin .chip').forEach(x=>x.classList.toggle("on",x===b));drawLeads()}
-function drawLeads(){const L=LEAD_LV?LEADS.filter(x=>x.level===LEAD_LV):LEADS;
+function drawLeads(){LEADS.forEach(x=>{if(LV_OLD[x.level])x.level=LV_OLD[x.level]});const L=LEAD_LV?LEADS.filter(x=>x.level===LEAD_LV):LEADS;
  el("leads").innerHTML=L.length?L.map(x=>{const d=new Date(x.created_at).toLocaleString("ru-RU",{timeZone:"Europe/Moscow",day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
   return '<div class="admin-card lead"><div class="lead-top"><b>'+esc(x.name||"Без имени")+'</b><span class="sub">'+esc(d)+'</span></div><span class="pill">'+esc(x.level)+'</span>'
   +(x.username?'<div class="lead-row">@'+esc(x.username)+'</div>':'')+(x.phone?'<div class="lead-row">'+esc(fmtPhone(x.phone))+'</div>':'')
@@ -312,9 +318,9 @@ main{flex:1;display:flex;flex-direction:column}
 #bookStep1 .levels{flex:none;grid-template-rows:none;gap:12px}
 #bookStep1 .level{height:auto;min-height:150px;padding:16px 16px 16px 14px;gap:12px}
 #bookStep1 .level.ph{background-size:cover;background-position:center;border-color:rgba(200,150,255,.28)}
-#bookStep1 .level.lv1{background:linear-gradient(90deg,rgba(7,9,26,.94) 0%,rgba(7,9,26,.72) 55%,rgba(7,9,26,.45) 100%),url(/assets/level1.jpg) center 55%/cover}
-#bookStep1 .level.lv2{background:linear-gradient(90deg,rgba(7,9,26,.94) 0%,rgba(7,9,26,.72) 55%,rgba(7,9,26,.45) 100%),url(/assets/level2.jpg) center 30%/cover}
-#bookStep1 .level.lv3{background:linear-gradient(90deg,rgba(7,9,26,.94) 0%,rgba(7,9,26,.72) 55%,rgba(7,9,26,.45) 100%),url(/assets/level3.jpg) center 60%/cover}
+#bookStep1 .level.lv1{background:linear-gradient(90deg,rgba(7,9,26,.95) 0%,rgba(7,9,26,.82) 55%,rgba(7,9,26,.68) 100%),url(/assets/level1.jpg) center 55%/cover}
+#bookStep1 .level.lv2{background:linear-gradient(90deg,rgba(7,9,26,.95) 0%,rgba(7,9,26,.82) 55%,rgba(7,9,26,.68) 100%),url(/assets/level2.jpg) center 30%/cover}
+#bookStep1 .level.lv3{background:linear-gradient(90deg,rgba(7,9,26,.95) 0%,rgba(7,9,26,.82) 55%,rgba(7,9,26,.68) 100%),url(/assets/level3.jpg) center 60%/cover}
 .lvb{min-width:0;flex:1}.lvb b{font-size:clamp(12px,3.8vw,15px)!important}
 .topics{list-style:none;margin:10px 0 0;padding:0}.topics li{font-size:clamp(9px,2.7vw,11px);margin:5px 0;color:#efeaff;font-weight:600;line-height:1.35}
 .topics li::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:linear-gradient(105deg,#4f8cff,#ff4fd8);margin-right:8px;vertical-align:middle}
@@ -389,6 +395,58 @@ main{flex:1;display:flex;flex-direction:column}
 .up-err{color:#ff9b9b;font-size:11px;line-height:1.4}.up-prog small{display:block;margin-top:6px;color:var(--muted);font-size:9px}
 #mtModal .sheet textarea{min-height:110px}
 #mtModal{z-index:50}
+#bookStep1 .topics li,#bookStep1 .lv-res{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.wv-head h2{flex:1;min-width:0}.wv-head .btn.small{white-space:nowrap;flex:0 0 auto}
+#profile .section .section{padding-left:0!important;padding-right:0!important}
+#admin .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-4px!important;margin-right:-4px!important;padding:0 4px}#admin .chips::-webkit-scrollbar{display:none}#admin .chip{white-space:nowrap;flex:0 0 auto}
+/* ===== ЕДИНАЯ ТИПОГРАФИКА: один шрифт, 5 размеров ===== */
+:root{--f:'Unbounded','Arial Black',Arial,sans-serif;
+ --t1:clamp(17px,5vw,20px);   /* заголовок страницы */
+ --t2:clamp(13px,3.9vw,15px); /* заголовок карточки */
+ --t3:11.5px;                 /* подзаголовок, кнопки, поля */
+ --t4:10px;                   /* основной текст */
+ --t5:8.5px;                  /* подписи, плашки, меню */}
+*{font-family:var(--f)!important}
+body{font-size:var(--t4);font-weight:500;letter-spacing:0;line-height:1.45}
+/* заголовки страниц */
+.hd,.section h2,#home .section h2,#admin h2,.wv-head h2,.ar-head h2,.sh-top h2{font-size:var(--t1)!important;font-weight:900!important;line-height:1.2!important;letter-spacing:0!important}
+.hero h1.pitch{font-size:clamp(19px,5.6vw,24px)!important;font-weight:900!important;line-height:1.25!important}
+/* заголовки карточек */
+#bookStep1 .lvb b,.np-meta b,#home .mentor .mbody b,#profile .mbody b,.ninfo b{font-size:var(--t2)!important;font-weight:900!important;line-height:1.25!important}
+/* подзаголовки, кнопки, поля */
+.tc-title,.level b,.pf-actions .level b,.admin-card b,.lead-top b,.mini-meta b,.cm h2,.q h2,.np-cm h3,.lv-plan-t{font-size:var(--t3)!important;font-weight:700!important;line-height:1.3!important}
+.btn,.btn.small,.btn.secondary{font-size:var(--t3)!important;font-weight:900!important;letter-spacing:.04em!important}
+.field,#bookStep2 .field,textarea.field,select.field,input[type=file].field{font-size:var(--t3)!important;font-weight:500!important}
+.flabel{font-size:var(--t5)!important;font-weight:700!important;letter-spacing:.06em!important}
+.stats .admin-card strong{font-size:22px!important;font-weight:900!important}.ar-stats b{font-size:var(--t2)!important;font-weight:900!important}
+/* основной текст */
+.intro,.topics li,#bookStep1 .topics li,.lv-res,.facts li,.sub,.muted,.mentor p,.level small,.pf-actions .level small,.notice,.np-mentor p,.cm-row .tx,.np-pop .bub,.demo-hint,#bookStep2 .demo-hint,.empty,.lead-row,.feature p{font-size:var(--t4)!important;line-height:1.45!important}
+.intro,.sub,.muted,.level small,.facts li,.empty,.demo-hint{font-weight:500!important}
+.topics li,#bookStep1 .topics li,.lv-res{font-weight:700!important}
+.cm-row .tx,.np-pop .bub,.np-mentor p{font-weight:500!important}
+/* подписи, плашки, меню */
+.eyebrow,.lv-tag,.pill,.mbadge,.chip,.tag,.brandline,.tc-art,.tc-foot,.mini-meta small,.np-time,.np-top small,.cm-row b,.crop-hint,.up-prog small,.ar-stats small,.qi .qt small,.nav button,.lead-top .sub{font-size:var(--t5)!important;letter-spacing:.06em!important;line-height:1.3!important}
+.eyebrow,.lv-tag,.pill,.mbadge,.chip,.nav button,.cm-row b{font-weight:700!important}
+.mbadge.big{font-size:var(--t5)!important}
+.logo{font-size:clamp(11px,3.4vw,14px)!important;font-weight:900!important;letter-spacing:.02em!important}
+
+#bookStep1 .level{padding:20px 16px 20px 18px!important}
+#bookStep1 .lvb{display:flex;flex-direction:column;align-items:flex-start}
+#bookStep1 .lv-tag{margin-bottom:10px}
+#bookStep1 .topics li{margin:6px 0}
+#bookStep1 .lv-res{width:100%}
+.np{visibility:hidden;transition:transform .32s cubic-bezier(.2,.8,.2,1),background .6s,visibility 0s .32s}.np.show{visibility:visible;transition:transform .32s cubic-bezier(.2,.8,.2,1),background .6s,visibility 0s}
+.lv-tag{display:inline-block;font-size:8px;letter-spacing:.1em;padding:4px 9px;border-radius:20px;background:var(--grad);color:#fff;font-weight:700;margin-bottom:8px}
+#bookStep1 .lvb b{line-height:1.3}
+.lv-pain{margin:6px 0 2px;font-size:clamp(9px,2.7vw,10.5px);line-height:1.45;color:#d9d2f5;font-weight:500}
+#bookStep1 .topics li{line-height:1.4;margin:6px 0}
+.lv-res{margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.12);font-size:clamp(9px,2.7vw,10.5px);line-height:1.4;color:#fff;font-weight:700}
+.lv-res span{color:#c9a2ff}
+.intro br{display:block;content:"";margin-top:6px}
+.lv-pick{margin:10px 0 0}.lv-pick .lv-tag{margin:0}
+.lv-pick-h{display:flex;flex-direction:column;gap:2px}.lv-pick-h .lv-tag{align-self:flex-start;margin-bottom:4px}
+.lv-plan-t{margin:12px 0 6px;font-size:10px;color:#d08bff}
+.lv-plan{margin:0;padding-left:18px;font-size:10px;line-height:1.5;color:var(--text)}.lv-plan li{margin:3px 0}
 .tc-pp,.mini-b,.np-ctrl button,.np-lk,.np-x,.x,.tg{display:grid!important;place-items:center;padding:0!important;line-height:1!important}
 .tc-pp svg,.mini-b svg,.np-ctrl svg{display:block}
 .tc-pp{font-size:20px!important}.mini-b.pp{font-size:16px!important}.np-ctrl .pp{font-size:30px!important}.np-ctrl .sk{font-size:24px!important}
@@ -599,5 +657,73 @@ el("npPrev").innerHTML=ic("prev");el("npNext").innerHTML=ic("next");el("miniPP")
 // открыть «Волну» по ссылке из бота (…/#wave)
 if(new URLSearchParams(location.search).get("p")==="wave"||location.hash.indexOf("#wave")===0)setTimeout(()=>go("wave"),0);
 </script>
-</body>
+<style>
+/* ===== ВЕРСИЯ ДЛЯ КОМПЬЮТЕРА (широкое окно) ===== */
+@media (hover:hover){
+ .level,.tc,.qi,.admin-card.lead{transition:border-color .2s,transform .2s,box-shadow .2s}
+ .level:hover,.tc:hover,.qi:hover{border-color:rgba(200,150,255,.55)!important;box-shadow:0 8px 30px rgba(120,60,255,.18)}
+ #bookStep1 .level:hover{transform:translateY(-2px)}
+ .btn:hover,.tc-pp:hover,.mini-b.pp:hover,.np-ctrl .pp:hover{filter:brightness(1.12)}
+ .chip:hover{border-color:rgba(200,150,255,.55);color:var(--text)}
+ .nav button:hover{color:#e0a8ff}
+ .tc-art:hover,.np-meta a:hover,.back:hover{text-decoration:underline}
+ ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:rgba(160,150,255,.25);border-radius:10px;border:2px solid transparent;background-clip:padding-box}::-webkit-scrollbar-track{background:transparent}
+}
+@media (min-width:900px){
+ :root{--w:1100px;--t1:30px;--t2:18px;--t3:13.5px;--t4:12.5px;--t5:10.5px}
+ .app{max-width:var(--w)!important;border:0!important}
+ header{padding:30px 40px 10px!important}.logo{font-size:17px!important}
+ .hero,#home .hero,.section,#home .section,.detail,.back{padding-left:40px!important;padding-right:40px!important}
+ /* главная: текст и кнопка слева, видео справа */
+ #home.active{display:grid;grid-template-columns:1.05fr 1fr;column-gap:48px;align-items:start;padding-top:30px}
+ #home .hero:first-child{display:contents}
+ #home .hero h1.pitch{grid-column:1;grid-row:1;font-size:clamp(28px,3vw,38px)!important;line-height:1.2!important;margin:10px 0 28px!important;padding-left:40px;overflow-wrap:normal!important;word-break:keep-all}
+ #home .hero h1.pitch *{overflow-wrap:normal!important}
+ #home .vid{grid-column:2;grid-row:1/span 4;margin-right:40px;margin-top:10px}
+ #home .hero:nth-child(2){grid-column:1;grid-row:2;padding-top:0!important}
+ #home .hero:nth-child(2) .btn{width:auto;min-width:280px}
+ #home .section:nth-child(3){grid-column:1;grid-row:3;padding-top:44px!important}
+ #home .section:nth-child(4){grid-column:1;grid-row:4;padding-top:16px!important}
+ #home .section:nth-child(4) .btn{width:auto}
+ /* запись: три уровня в ряд */
+ #bookStep1 .hd,#bookStep1 .intro,#bookStep1 .eyebrow{max-width:760px}
+ #bookStep1 .levels{grid-template-columns:repeat(3,1fr)!important;gap:18px!important;margin-top:10px}
+ #bookStep1 .level{min-height:360px;align-items:stretch!important;padding:26px 22px!important}
+ #bookStep1 .lvb{height:100%}
+ #bookStep1 .topics{flex:1}
+ #bookStep1 .topics li,#bookStep1 .lv-res{white-space:normal}
+ #bookStep1 .arrow{position:absolute;right:18px;top:24px}
+ #bookStep1 .level{position:relative}
+ #bookStep1 .level.lv1,#bookStep1 .level.lv2,#bookStep1 .level.lv3{background-size:cover!important}
+ #bookStep2{max-width:620px;margin:0 auto;width:100%}
+ /* волна: карточки в две колонки */
+ #wvList,#arList{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+ #wvList .tc,#arList .tc{margin:0}
+ #wvList .empty,#arList .empty{grid-column:1/-1}
+ .wv-tabs{flex-wrap:wrap!important;overflow:visible!important}
+ .tc-cov{width:76px;height:76px;flex-basis:76px}
+ .ar-stats{max-width:620px}
+ /* профиль и панель */
+ #profile .section,#admin .section{max-width:900px;margin:0 auto}
+ #profile .pf-actions{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+ #profile .btn{width:auto;min-width:320px}
+ #leads{display:grid;grid-template-columns:1fr 1fr;gap:14px}#leads .admin-card{margin:0}#leads .empty{grid-column:1/-1}
+ #admin .stats{grid-template-columns:repeat(4,1fr)!important}
+ #admin .chips{flex-wrap:wrap!important;overflow:visible!important}
+ /* плеер: обложка слева, всё остальное справа */
+ .np-in{max-width:1100px!important;display:grid;grid-template-columns:minmax(300px,440px) 1fr;column-gap:56px;padding:24px 48px 60px!important;align-content:start}
+ .np-top{grid-column:1/-1}
+ .np-cov{grid-column:1;grid-row:2/span 20;max-width:none!important;margin:24px 0 0!important;position:sticky;top:24px}
+ .np-row,.np-pop,#npWfBox,.np-time,.np-ctrl,.np-mentor,.np-admin,.np-cm{grid-column:2}
+ .np-row{margin-top:30px}.np-meta b{font-size:26px!important}
+ .np-ctrl{justify-content:flex-start!important;gap:22px!important}
+ /* окна по центру, а не снизу */
+ .modal{align-items:center!important}
+ .sheet{border-radius:22px!important;max-width:560px;max-height:88vh!important}
+ /* мини-плеер и меню */
+ .mini{width:min(720px,calc(100% - 32px))!important}
+ .nav{width:min(720px,100%)!important;border:1px solid var(--line);border-bottom:0;border-radius:18px 18px 0 0}
+}
+
+</style></body>
 </html>
