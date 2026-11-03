@@ -48,6 +48,7 @@ async function blobToken(pathname, max, types) {
 const actions = {
   // 1) разрешение загрузить файл (аудио или обложку)
   async upload_token({ me, b }) {
+    if (!process.env.BLOB_READ_WRITE_TOKEN) return { status: 500, error: "no_blob_store" };
     const kind = b.kind === "cover" ? "cover" : "audio";
     const ext = String(b.filename || "").split(".").pop().toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || (kind === "cover" ? "jpg" : "mp3");
     const pathname = `wave/${me}/${kind}-${Date.now()}.${ext}`;
