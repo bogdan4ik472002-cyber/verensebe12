@@ -31,6 +31,18 @@ async function redis(...cmd) {
   return j.result;
 }
 
+// несколько команд за один запрос: pipe([["GET","a"],["SCARD","b"]]) → [res1, res2]
+async function pipe(cmds) {
+  if (!cmds.length) return [];
+  const r = await fetch(REDIS_URL.replace(/\/$/, "") + "/pipeline", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${REDIS_TOKEN}`, "Content-Type": "application/json" },
+    body: JSON.stringify(cmds),
+  });
+  const j = await r.json();
+  return j.map((x) => (x && "result" in x ? x.result : null));
+}
+
 async function getUser(id) {
   const v = await redis("GET", `user:${id}`);
   return v ? JSON.parse(v) : null;
@@ -80,4 +92,4 @@ function fmtPhone(p) {
   return d ? "+" + d : "";
 }
 
-module.exports = { tg, redis, getUser, saveUser, checkInitData, getAdmins, isAdmin, esc, fmtPhone };
+module.exports = { tg, redis, pipe, getUser, saveUser, checkInitData, getAdmins, isAdmin, esc, fmtPhone };
