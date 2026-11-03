@@ -110,15 +110,15 @@ header{padding:26px 22px 8px!important}.logo{font-size:21px!important;white-spac
 <small class="crop-hint">Двигай картинку пальцем, масштаб — ползунком или двумя пальцами</small></div>
 <div id="upProg" class="up-prog" style="display:none"><div class="bar"><i id="upBar"></i></div><small id="upTxt"></small></div>
 <button class="btn" type="submit">Опубликовать в Волне</button></form></div>
-<div id="mini" class="mini" onclick="openNP()"><div class="mini-bar"><i id="miniBar"></i></div><div class="mini-cov" id="miniCov"></div><div class="mini-meta"><b id="miniT"></b><small id="miniA"></small></div><button class="mini-b" id="miniLk" onclick="event.stopPropagation();WV.cur&&likeT(WV.cur.id)">♡</button><button class="mini-b pp" id="miniPP" onclick="event.stopPropagation();togglePlay()">▶</button></div>
+<div id="mini" class="mini" onclick="openNP()"><div class="mini-bar"><i id="miniBar"></i></div><div class="mini-cov" id="miniCov"></div><div class="mini-meta"><b id="miniT"></b><small id="miniA"></small></div><button class="mini-b" id="miniLk" onclick="event.stopPropagation();WV.cur&&likeT(WV.cur.id)">♡</button><button class="mini-b pp" id="miniPP" onclick="event.stopPropagation();togglePlay()" aria-label="Играть"></button></div>
 <div id="np" class="np"><div class="np-in">
-<div class="np-top"><button class="np-x" onclick="closeNP()">⌄</button><small>СЕЙЧАС ИГРАЕТ</small><span style="width:36px"></span></div>
+<div class="np-top"><button class="np-x" onclick="closeNP()" aria-label="Свернуть"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button><small>СЕЙЧАС ИГРАЕТ</small><span style="width:36px"></span></div>
 <div class="np-cov" id="npCov"></div>
 <div class="np-row"><div class="np-meta"><b id="npTitle"></b><a id="npArt"></a></div><button class="np-lk" id="npLk" onclick="WV.cur&&likeT(WV.cur.id)">♡</button></div>
 <div class="np-pop" id="npPop"></div>
 <div id="npWfBox"></div>
 <div class="np-time"><span id="npCur">0:00</span><span id="npDur">0:00</span></div>
-<div class="np-ctrl"><button onclick="nextT(-1)">⏮</button><button class="pp" id="npPP" onclick="togglePlay()">▶</button><button onclick="nextT(1)">⏭</button></div>
+<div class="np-ctrl"><button class="sk" onclick="nextT(-1)" aria-label="Назад" id="npPrev"></button><button class="pp" id="npPP" onclick="togglePlay()" aria-label="Играть"></button><button class="sk" onclick="nextT(1)" aria-label="Вперёд" id="npNext"></button></div>
 <div class="np-mentor" id="npMentor"></div>
 <div class="np-admin" id="npAdmin"></div>
 <div class="np-cm"><h3>Комментарии</h3><div class="cmf"><input class="field wv-txt" id="npCmIn" maxlength="300" placeholder="Комментарий" onfocus="WV.cmT=aud.currentTime;this.placeholder='Комментарий на '+fmtT(WV.cmT)" onkeydown="if(event.key==='Enter')sendCm()"><button class="btn small" onclick="sendCm()">↑</button></div><div id="npCmList"></div></div>
@@ -138,8 +138,16 @@ var ICON_ON='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
 var ICON_OFF='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5z" fill="currentColor"/><path d="m16 9 6 6M22 9l-6 6"/></svg>';
 function paint(){var off=hv.muted||hv.volume===0;mb.innerHTML=off?ICON_OFF:ICON_ON;mb.setAttribute('aria-label',off?'Включить звук':'Выключить звук');mb.classList.toggle('off',off)}
 ['pointerup','touchend'].forEach(function(e){mb.addEventListener(e,function(ev){ev.stopPropagation()})});
-mb.addEventListener('click',function(ev){ev.stopPropagation();unlocked=true;hv.muted=!hv.muted;if(!hv.muted){hv.volume=1;var q=hv.play();if(q&&q.catch)q.catch(function(){})}paint()});
+mb.addEventListener('click',function(ev){ev.stopPropagation();unlocked=true;hv.muted=!hv.muted;if(!hv.muted){if(typeof aud!=='undefined'&&!aud.paused)aud.pause();hv.volume=1;var q=hv.play();if(q&&q.catch)q.catch(function(){})}paint()});
 hv.addEventListener('volumechange',paint);paint();
+// пауза видео, когда уходим с главной, и продолжение, когда возвращаемся
+var wasMuted=null;
+window.heroActive=function(on){
+ if(on){if(!hv.paused)return;var bg=typeof aud!=='undefined'&&!aud.paused;
+  hv.muted=bg?true:(wasMuted===null?hv.muted:wasMuted);var q=hv.play();if(q&&q.catch)q.catch(function(){hv.muted=true;hv.play().catch(function(){})})}
+ else{if(hv.paused)return;wasMuted=hv.muted;hv.pause()}
+ paint()};
+document.addEventListener('visibilitychange',function(){var home=document.getElementById('home').classList.contains('active');if(home)window.heroActive(!document.hidden)});
 hv.muted=false;var p=hv.play();if(p&&p.then){p.then(function(){unlocked=true}).catch(function(){hv.muted=true;hv.play().catch(function(){})})}
 })();
 const el=id=>document.getElementById(id);
@@ -149,7 +157,7 @@ function toast(m){const t=el("toast");t.textContent=m;t.classList.add("show");se
 function ls(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 function renderProfile(){const a=getLeads();el("pgStage").textContent=a.length?a[0].format:"Пока не выбран";el("pgHint").textContent=a.length?("Заявка отправлена: "+a[0].date):"Оставь заявку, чтобы начать"}
-function go(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));el(id).classList.add('active');const nav={wave:'wave',artist:'wave',admin:'profile'}[id]||id;document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===nav));window.scrollTo(0,0);if(id==='admin')renderLeads();if(id==='profile')renderProfile();if(id==='wave')loadFeed()}
+function go(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));el(id).classList.add('active');const nav={wave:'wave',artist:'wave',admin:'profile'}[id]||id;document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===nav));window.scrollTo(0,0);if(id==='admin')renderLeads();if(id==='profile')renderProfile();if(id==='wave')loadFeed();if(window.heroActive)heroActive(id==='home')}
 const LV={start:"Я только начинаю",beginner:"Уже пробовал записываться",artist:"Я действующий артист",studio:"Студия SO LOUD · Королёв"};let curLv=null;
 function pickLevel(k){curLv=k;go("booking");document.getElementById("bookStep1").style.display="none";document.getElementById("bookStep2").style.display="flex";setTimeout(function(){var n=document.getElementById("name");if(n)n.focus({preventScroll:true})},50)}
 function resetLevel(){curLv=null;document.getElementById("bookStep1").style.display="flex";document.getElementById("bookStep2").style.display="none";window.scrollTo(0,0)}
@@ -380,12 +388,22 @@ main{flex:1;display:flex;flex-direction:column}
 .up-prog .bar{height:6px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden}.up-prog .bar i{display:block;height:100%;width:0;background:var(--grad);transition:width .2s}
 .up-err{color:#ff9b9b;font-size:11px;line-height:1.4}.up-prog small{display:block;margin-top:6px;color:var(--muted);font-size:9px}
 #mtModal .sheet textarea{min-height:110px}
-#mtModal{z-index:50}.toast{z-index:60!important}
+#mtModal{z-index:50}
+.tc-pp,.mini-b,.np-ctrl button,.np-lk,.np-x,.x,.tg{display:grid!important;place-items:center;padding:0!important;line-height:1!important}
+.tc-pp svg,.mini-b svg,.np-ctrl svg{display:block}
+.tc-pp{font-size:20px!important}.mini-b.pp{font-size:16px!important}.np-ctrl .pp{font-size:30px!important}.np-ctrl .sk{font-size:24px!important}
+.mini-b{font-size:17px}.np-lk{font-size:24px}
+.np-x{font-size:16px}.toast{z-index:60!important}
 </style>
 <script>
 /* ===== ВОЛНА: общая лента треков ===== */
 const WV={sort:"new",list:[],queue:[],cur:null,np:null,cm:[],counted:{},byId:{},cmT:0,uploading:false,popId:null};
 let VIEW=[];
+const ICO={play:'<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M8.5 5.6v12.8a.9.9 0 0 0 1.37.77l10.2-6.4a.9.9 0 0 0 0-1.54L9.87 4.83A.9.9 0 0 0 8.5 5.6z"/></svg>',
+ pause:'<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4.2" height="14" rx="1.2"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.2"/></svg>',
+ prev:'<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><rect x="5" y="5.5" width="2.4" height="13" rx="1"/><path d="M19 6.3v11.4a.8.8 0 0 1-1.24.67L9.6 12.67a.8.8 0 0 1 0-1.34l8.16-5.7A.8.8 0 0 1 19 6.3z"/></svg>',
+ next:'<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><rect x="16.6" y="5.5" width="2.4" height="13" rx="1"/><path d="M5 6.3v11.4a.8.8 0 0 0 1.24.67l8.16-5.7a.8.8 0 0 0 0-1.34L6.24 5.63A.8.8 0 0 0 5 6.3z"/></svg>'};
+const ic=n=>ICO[n];
 function api(action,data){return fetch("/api/wave",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({initData:TG?TG.initData:"",action},data||{}))})
  .then(r=>r.json().catch(()=>({})).then(j=>{if(!r.ok)throw Object.assign(new Error(j.error||("HTTP "+r.status)),{code:j.error,status:r.status});return j}))}
 const fmtT=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
@@ -400,7 +418,10 @@ function haptic(){try{TG&&TG.HapticFeedback&&TG.HapticFeedback.impactOccurred("l
 function resample(p,n,seed){
  if(!p||!p.length){const out=[];let h=hashN(seed);for(let i=0;i<n;i++){h=(h*1103515245+12345)&0x7fffffff;out.push(.3+.5*Math.abs(Math.sin(i/4+(h%5)))*(.6+(h%40)/100))}return out}
  const out=[];for(let i=0;i<n;i++){const a=Math.floor(i*p.length/n),b=Math.max(a+1,Math.floor((i+1)*p.length/n));let m=0;for(let j=a;j<b&&j<p.length;j++)m=Math.max(m,p[j]);out.push(m)}
- const mx=Math.max.apply(null,out.concat([.01]));return out.map(v=>Math.max(.08,v/mx))}
+ for(let k=0;k<1;k++){const t=out.slice();for(let i=0;i<n;i++)out[i]=((t[i-1]??t[i])+2*t[i]+(t[i+1]??t[i]))/4}
+ const srt=out.slice().sort((a,b)=>a-b),lo=srt[Math.floor(n*.25)]||0,hi=srt[n-1]||1;
+ if(hi-lo<.015)return out.map((v,i)=>.55+.25*Math.sin(i/2.3)*Math.cos(i/5.1));
+ return out.map(v=>{const x=Math.min(1,Math.max(0,(v-lo)/(hi-lo)));return .14+.86*Math.pow(x,1.15)})}
 function wfHTML(t,n,big){const bars=resample(t.peaks,n,t.id).map(v=>'<i style="height:'+Math.round(v*100)+'%"></i>').join("");
  return '<div class="wf'+(big?" big":"")+'" data-id="'+t.id+'" onclick="wfSeek(event,this)"><div class="wf-b">'+bars+'</div><div class="wf-p" style="clip-path:inset(0 100% 0 0)">'+bars+'</div>'+(big?'<div class="wf-cm" id="npDots"></div>':"")+"</div>"}
 function wfSeek(e,box){e.stopPropagation();const id=box.dataset.id,r=box.getBoundingClientRect(),f=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width));
@@ -413,7 +434,7 @@ function card(t,i){const on=WV.cur&&WV.cur.id===t.id;
  +'<div class="tc-top"><div class="tc-cov" style="'+covStyle(t)+'" onclick="playFrom('+i+')">'+(t.cover?"":"♪")+"</div>"
  +'<div class="tc-meta"><a class="tc-art" onclick="openArtist('+t.uid+')">'+esc(t.author)+'</a><b class="tc-title" onclick="playFrom('+i+',true)">'+esc(t.title)+"</b>"
  +'<div class="tc-tags"><span class="pill">'+(LVS[t.level]||"START")+"</span>"+(t.mentor?'<span class="mbadge">🔥 Верен себе</span>':"")+"</div></div>"
- +'<button class="tc-pp" onclick="playFrom('+i+')">'+(on&&!aud.paused?"❚❚":"▶")+"</button></div>"
+ +'<button class="tc-pp" onclick="playFrom('+i+')">'+ic(on&&!aud.paused?"pause":"play")+"</button></div>"
  +wfHTML(t,56)
  +'<div class="tc-foot"><span onclick="playFrom('+i+')">▶ '+t.plays+'</span><button class="lk'+(t.liked?" on":"")+'" data-lk="'+t.id+'" onclick="likeT(\''+t.id+'\')">'+(t.liked?"♥":"♡")+" "+t.likes+'</button><span onclick="playFrom('+i+',true)">💬 '+t.comments+'</span><span class="tc-dur">'+fmtT(t.dur)+"</span></div></div>"}
 function renderList(box,L,empty){box.innerHTML=L.length?L.map(card).join(""):'<div class="empty">'+empty+"</div>";refreshPlaying();paintProgress()}
@@ -443,8 +464,8 @@ function nextT(dir){if(!WV.cur)return;const Q=WV.queue.length?WV.queue:VIEW;let 
  if(dir<0&&aud.currentTime>3){aud.currentTime=0;return}
  if(i<0||i>=Q.length){if(dir>0){aud.pause();aud.currentTime=0}return}loadTrack(Q[i],0)}
 function refreshPlaying(){const p=!aud.paused;
- document.querySelectorAll(".tc").forEach(c=>{const on=!!WV.cur&&c.id==="tc-"+WV.cur.id;c.classList.toggle("cur",on);const b=c.querySelector(".tc-pp");if(b)b.textContent=on&&p?"❚❚":"▶"});
- el("miniPP").textContent=p?"❚❚":"▶";el("npPP").textContent=p?"❚❚":"▶"}
+ document.querySelectorAll(".tc").forEach(c=>{const on=!!WV.cur&&c.id==="tc-"+WV.cur.id;c.classList.toggle("cur",on);const b=c.querySelector(".tc-pp");if(b)b.innerHTML=ic(on&&p?"pause":"play")});
+ el("miniPP").innerHTML=ic(p?"pause":"play");el("npPP").innerHTML=ic(p?"pause":"play")}
 function paintProgress(){if(!WV.cur)return;const d=aud.duration||WV.cur.dur||1,f=Math.min(1,(aud.currentTime||0)/d);
  document.querySelectorAll('.wf[data-id="'+WV.cur.id+'"] .wf-p').forEach(x=>x.style.clipPath="inset(0 "+((1-f)*100).toFixed(2)+"% 0 0)");
  el("miniBar").style.width=(f*100)+"%";
@@ -452,6 +473,7 @@ function paintProgress(){if(!WV.cur)return;const d=aud.duration||WV.cur.dur||1,f
 aud.addEventListener("timeupdate",paintProgress);
 ["play","pause"].forEach(ev=>aud.addEventListener(ev,refreshPlaying));
 aud.addEventListener("ended",()=>nextT(1));
+aud.addEventListener("play",()=>{const v=el("heroVid");if(v&&!v.muted)v.muted=true});
 function showMini(){const t=WV.cur;if(!t)return;const c=el("miniCov");c.style.cssText=covStyle(t);c.textContent=t.cover?"":"♪";
  el("miniT").textContent=t.title;el("miniA").textContent=t.author;updLike(t);document.body.classList.add("has-mini")}
 
@@ -522,7 +544,7 @@ async function analyze(file){const out={dur:0,peaks:[]};
  try{if(file.size<=12e6){const C=window.AudioContext||window.webkitAudioContext,ctx=new C(),ab=await file.arrayBuffer();
   const buf=await new Promise((res,rej)=>{const p=ctx.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej)});
   out.dur=buf.duration;const ch=buf.getChannelData(0),N=120,step=Math.max(1,Math.floor(ch.length/N));
-  for(let i=0;i<N;i++){let m=0;for(let j=i*step;j<(i+1)*step&&j<ch.length;j+=16){const v=Math.abs(ch[j]);if(v>m)m=v}out.peaks.push(+m.toFixed(3))}
+  for(let i=0;i<N;i++){let q=0,c=0;for(let j=i*step;j<(i+1)*step&&j<ch.length;j+=8){q+=ch[j]*ch[j];c++}out.peaks.push(+Math.sqrt(q/Math.max(1,c)).toFixed(4))}
   try{ctx.close()}catch(e){}}}catch(e){}
  if(!out.dur)out.dur=await new Promise(res=>{const a=new Audio();a.preload="metadata";a.onloadedmetadata=()=>res(isFinite(a.duration)?a.duration:0);a.onerror=()=>res(0);a.src=URL.createObjectURL(file);setTimeout(()=>res(0),8000)});
  return out}
@@ -573,6 +595,7 @@ async function submitTrack(e){e.preventDefault();const f=el("upFile").files[0];i
   toast("Не удалось загрузить");el("upProg").style.display="";el("upTxt").innerHTML='<span class="up-err wv-txt">⚠️ '+esc(why)+"</span>"}
  finally{WV.uploading=false;btn.disabled=false}}
 
+el("npPrev").innerHTML=ic("prev");el("npNext").innerHTML=ic("next");el("miniPP").innerHTML=ic("play");el("npPP").innerHTML=ic("play");
 // открыть «Волну» по ссылке из бота (…/#wave)
 if(new URLSearchParams(location.search).get("p")==="wave"||location.hash.indexOf("#wave")===0)setTimeout(()=>go("wave"),0);
 </script>
