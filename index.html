@@ -69,8 +69,8 @@ header{padding:26px 22px 8px!important}.logo{font-size:21px!important;white-spac
 <h2 class="hd" style="margin-top:4px!important">Заполни данные</h2><p class="muted" style="margin:0 0 4px">Первый урок бесплатно. После заявки напишем тебе в Telegram.</p>
 <form class="form" id="bookForm" onsubmit="submitForm(event)">
 <label class="flabel"><span class="fn">1</span>ФИО</label><input class="field" id="name" autocomplete="name" placeholder="Имя и фамилия" required>
-<label class="flabel"><span class="fn">2</span>Ник в Telegram</label><input class="field" id="contact" autocapitalize="none" autocorrect="off" placeholder="@username" required>
-<label class="flabel"><span class="fn">3</span>Демка для прослушивания</label><input class="field" id="demo" type="file" accept="audio/*,.mp3,.wav,.m4a,.flac">
+<label class="flabel"><span class="fn">2</span>Ник в Telegram или телефон</label><input class="field" id="contact" autocapitalize="none" autocorrect="off" placeholder="@username" required>
+<label class="flabel"><span class="fn">3</span>Демка для прослушивания</label><div class="field demo-hint" id="demoHint">После заявки бот попросит прислать демку прямо в чат — файлом или голосовым, любого размера</div><input id="demo" type="file" style="display:none">
 <button class="btn" type="submit">Отправить заявку</button></form></div>
 </div></section>
 
@@ -151,7 +151,18 @@ function pickLevel(k){curLv=k;go("booking");document.getElementById("bookStep1")
 function resetLevel(){curLv=null;document.getElementById("bookStep1").style.display="flex";document.getElementById("bookStep2").style.display="none";window.scrollTo(0,0)}
 
 function getLeads(){try{return JSON.parse(localStorage.getItem('music_education_leads')||'[]')}catch(e){return []}}
-function submitForm(e){e.preventDefault();const a=getLeads();const f=document.getElementById("demo").files[0];a.unshift({name:document.getElementById("name").value,contact:document.getElementById("contact").value,format:LV[curLv]||"—",message:f?("Демка: "+f.name):"Демка не загружена",date:new Date().toLocaleString("ru-RU")});try{localStorage.setItem("music_education_leads",JSON.stringify(a))}catch(x){}e.target.reset();resetLevel();go("profile");toast("Заявка сохранена")}
+function submitForm(e){e.preventDefault();
+ if(TG){const btn=e.target.querySelector('button[type=submit]');btn.disabled=true;btn.textContent="Отправляю…";
+  fetch("/api/lead",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:TG.initData,level:LV[curLv]||"—",name:el("name").value.trim(),contact:el("contact").value.trim()})})
+  .then(r=>r.json().catch(()=>({})).then(j=>({ok:r.ok,j})))
+  .then(({ok,j})=>{btn.disabled=false;btn.textContent="Отправить заявку";
+   if(!ok){toast(j.error==="too_often"?"Заявка уже отправлена, подожди минуту":"Не получилось отправить, попробуй ещё раз");return}
+   saveLocalLead();e.target.reset();resetLevel();go("profile");toast("Заявка отправлена ✅");
+   setTimeout(()=>{try{TG.close()}catch(x){}},1600)})
+  .catch(()=>{btn.disabled=false;btn.textContent="Отправить заявку";toast("Нет связи, попробуй ещё раз")});return}
+ saveLocalLead();e.target.reset();resetLevel();go("profile");toast("Заявка сохранена")}
+function saveLocalLead(){const a=getLeads();const f=document.getElementById("demo").files[0];a.unshift({name:document.getElementById("name").value,contact:document.getElementById("contact").value,format:LV[curLv]||"—",message:f?("Демка: "+f.name):"Демку пришлёт в чат бота",date:new Date().toLocaleString("ru-RU")});try{localStorage.setItem("music_education_leads",JSON.stringify(a))}catch(x){}}
+function fmtPhone(p){const d=String(p||"").replace(/\D/g,"");return d.length===11&&(d[0]==="7"||d[0]==="8")?"+7 "+d.slice(1,4)+" "+d.slice(4,7)+"-"+d.slice(7,9)+"-"+d.slice(9):(d?"+"+d:"")}
 function renderLeads(){const a=getLeads();document.getElementById('leadCount').textContent=a.length;document.getElementById('leads').innerHTML=a.length?a.map(x=>`<div class="admin-card"><b>${esc(x.name)}</b><div class="sub">${esc(x.date)} · ${esc(x.format)}</div><div style="margin-top:6px">${esc(x.contact)}</div><div class="sub" style="margin-top:5px">${esc(x.message||'Без комментария')}</div></div>`).join(''):'<div class="empty">Пока заявок нет.</div>'}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 /* ===== Telegram Mini App: автозаполнение профиля ===== */
@@ -161,12 +172,12 @@ function fillProfile(u){ME=u;const full=[u.first_name,u.last_name].filter(Boolea
  if(full)el("pfName").textContent=full;
  if(u.photo_url){const a=el("pfAva");a.classList.add("photo");a.innerHTML='<img alt="" src="'+esc(u.photo_url)+'">'}
  el("pfUser").textContent=u.username?"@"+u.username:"Без ника";el("pfUser").style.display="";
- el("pfPhone").textContent=u.phone?("+"+u.phone.replace(/^\+/,"")):"";el("pfPhone").style.display=u.phone?"":"none";
+ el("pfPhone").textContent=fmtPhone(u.phone);el("pfPhone").style.display=u.phone?"":"none";
  el("pfFacts").style.display="";
  el("pfText").textContent=u.registered?"Ты зарегистрирован ✅":"Поделись профилем, чтобы завершить регистрацию";
  el("pfShare").style.display=u.registered?"none":"";
  // автозаполнение формы записи
- const n=el("name"),c=el("contact");if(n&&!n.value&&full)n.value=full;if(c&&!c.value&&u.username)c.value="@"+u.username;
+ const n=el("name"),c=el("contact");if(n&&!n.value&&full)n.value=full;if(c&&!c.value)c.value=u.username?"@"+u.username:fmtPhone(u.phone);
  if(u.username&&!localStorage.getItem("veren_nick"))try{localStorage.setItem("veren_nick","@"+u.username)}catch(e){}}
 function loadMe(){if(!TG)return Promise.resolve(null);
  return fetch("/api/me",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:TG.initData})})
@@ -225,6 +236,7 @@ img,video{max-width:100%}
 input[type=file].field{padding:10px;font-size:10px}
 input[type=file].field::file-selector-button{border:0;border-radius:9px;padding:9px 12px;margin-right:10px;background:var(--grad);color:#fff;font-weight:700;font-size:10px;cursor:pointer}
 #bookStep2 .back{display:block}
+#bookStep2 .demo-hint{color:var(--muted);font-size:10px;line-height:1.5;border-style:dashed}
 </style><style>
 /* fill screen, left align, profile + wave */
 .app{display:flex!important;flex-direction:column}

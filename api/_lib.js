@@ -61,4 +61,18 @@ function checkInitData(initData, maxAgeSec = 24 * 3600) {
   try { return JSON.parse(p.get("user")); } catch { return null; }
 }
 
-module.exports = { tg, redis, getUser, saveUser, checkInitData };
+// ---------- Админы (кому приходят заявки и демки) ----------
+async function getAdmins() {
+  return ((await redis("SMEMBERS", "admins")) || []).map(Number);
+}
+
+const esc = (s) => String(s ?? "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
+function fmtPhone(p) {
+  const d = String(p || "").replace(/\D/g, "");
+  if (d.length === 11 && (d[0] === "7" || d[0] === "8"))
+    return `+7 ${d.slice(1, 4)} ${d.slice(4, 7)}-${d.slice(7, 9)}-${d.slice(9)}`;
+  return d ? "+" + d : "";
+}
+
+module.exports = { tg, redis, getUser, saveUser, checkInitData, getAdmins, esc, fmtPhone };
