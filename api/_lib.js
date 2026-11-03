@@ -38,6 +38,11 @@ async function getUser(id) {
 
 async function saveUser(u) {
   await redis("SET", `user:${u.tg_id}`, JSON.stringify(u));
+  await redis("SADD", "users", String(u.tg_id));
+}
+
+async function isAdmin(id) {
+  return (await redis("SISMEMBER", "admins", String(id))) === 1;
 }
 
 // ---------- Проверка, что данные Mini App пришли действительно от Telegram ----------
@@ -75,4 +80,4 @@ function fmtPhone(p) {
   return d ? "+" + d : "";
 }
 
-module.exports = { tg, redis, getUser, saveUser, checkInitData, getAdmins, esc, fmtPhone };
+module.exports = { tg, redis, getUser, saveUser, checkInitData, getAdmins, isAdmin, esc, fmtPhone };

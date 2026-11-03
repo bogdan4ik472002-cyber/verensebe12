@@ -84,12 +84,15 @@ header{padding:26px 22px 8px!important}.logo{font-size:21px!important;white-spac
 <button class="level" onclick="openWave()"><div class="num">♪</div><div><b>Моя волна</b><small>Треки участников · лайки · комментарии</small></div><div class="arrow">›</div></button>
 </div>
 <button class="btn" style="margin-top:16px" onclick="go('booking')">Записаться на первый бесплатный урок</button>
-<button class="btn secondary" style="margin-top:10px" onclick="go('admin')">Административная панель · демо</button>
+<button class="btn secondary" id="adminBtn" style="margin-top:10px;display:none" onclick="go('admin')">👑 Панель наставника</button>
 </div></section>
 <section id="wave" class="page"><div class="section"><button class="back" style="padding-left:0!important" onclick="go('profile')">← Профиль</button><div class="eyebrow">МОЯ ВОЛНА</div><h2 style="margin:8px 0 14px">Треки участников</h2>
 <div class="chips"><button id="chAll" class="chip on" onclick="setFilter(false)">Все</button><button id="chLike" class="chip" onclick="setFilter(true)">♥ Моя коллекция</button></div>
 <div id="waveBody"></div></div></section>
-<section id="admin" class="page"><div class="section"><div class="eyebrow">ADMIN · DEMO</div><h2 style="font-size:29px;margin:8px 0">Панель наставника</h2><p class="sub">Демонстрационный интерфейс управления проектом.</p><div class="stats" style="margin-top:16px"><div class="admin-card"><strong id="leadCount">0</strong><span class="sub">Заявки на этом устройстве</span></div><div class="admin-card"><strong>3</strong><span class="sub">Уровня обучения</span></div><div class="admin-card"><strong>4</strong><span class="sub">Занятия в программе</span></div><div class="admin-card"><strong>0 ₽</strong><span class="sub">Первый урок</span></div></div><h2 style="margin:20px 0 10px">Последние заявки</h2><div id="leads"><div class="empty">Пока заявок нет. Отправь тестовую заявку через приложение.</div></div><button class="btn secondary" onclick="exportLeads()">Экспортировать заявки</button><div class="notice">Важно: это локальный демонстрационный кабинет. Реальные заявки и платежи появятся после подключения базы данных и Telegram-бота.</div></div></section>
+<section id="admin" class="page"><div class="section"><button class="back" style="padding-left:0!important" onclick="go('profile')">← Профиль</button><div class="eyebrow">ТОЛЬКО ДЛЯ НАСТАВНИКА</div><h2 style="margin:8px 0">Панель наставника</h2><p class="sub">Все заявки из приложения. Новые сверху.</p>
+<div class="stats" style="margin-top:16px"><div class="admin-card"><strong id="stTotal">—</strong><span class="sub">Заявок всего</span></div><div class="admin-card"><strong id="stToday">—</strong><span class="sub">За сегодня</span></div><div class="admin-card"><strong id="stWeek">—</strong><span class="sub">За 7 дней</span></div><div class="admin-card"><strong id="stUsers">—</strong><span class="sub">Учеников в боте</span></div></div>
+<div class="chips" style="margin-top:18px"><button class="chip on" data-lv="" onclick="setLeadFilter(this)">Все</button><button class="chip" data-lv="Я только начинаю" onclick="setLeadFilter(this)">01</button><button class="chip" data-lv="Уже пробовал записываться" onclick="setLeadFilter(this)">02</button><button class="chip" data-lv="Я действующий артист" onclick="setLeadFilter(this)">03</button><button class="chip" data-lv="Студия SO LOUD · Королёв" onclick="setLeadFilter(this)">Студия</button></div>
+<div id="leads"><div class="empty">Загружаю…</div></div><button class="btn secondary" onclick="renderLeads()">↻ Обновить</button></div></section>
 </main>
 <nav class="nav"><button class="active" data-page="home" onclick="go('home')"><span>⌂</span>Главная</button><button data-page="booking" onclick="go('booking')"><span>✎</span>Запись</button><button data-page="profile" onclick="go('profile')"><span>◉</span>Профиль</button></nav>
 <div id="upModal" class="modal" onclick="if(event.target===this)closeUpload()"><form class="sheet" onsubmit="submitTrack(event)"><div class="sh-top"><h2>Загрузить демку</h2><button type="button" class="x" onclick="closeUpload()">✕</button></div>
@@ -163,7 +166,19 @@ function submitForm(e){e.preventDefault();
  saveLocalLead();e.target.reset();resetLevel();go("profile");toast("Заявка сохранена")}
 function saveLocalLead(){const a=getLeads();const f=document.getElementById("demo").files[0];a.unshift({name:document.getElementById("name").value,contact:document.getElementById("contact").value,format:LV[curLv]||"—",message:f?("Демка: "+f.name):"Демку пришлёт в чат бота",date:new Date().toLocaleString("ru-RU")});try{localStorage.setItem("music_education_leads",JSON.stringify(a))}catch(x){}}
 function fmtPhone(p){const d=String(p||"").replace(/\D/g,"");return d.length===11&&(d[0]==="7"||d[0]==="8")?"+7 "+d.slice(1,4)+" "+d.slice(4,7)+"-"+d.slice(7,9)+"-"+d.slice(9):(d?"+"+d:"")}
-function renderLeads(){const a=getLeads();document.getElementById('leadCount').textContent=a.length;document.getElementById('leads').innerHTML=a.length?a.map(x=>`<div class="admin-card"><b>${esc(x.name)}</b><div class="sub">${esc(x.date)} · ${esc(x.format)}</div><div style="margin-top:6px">${esc(x.contact)}</div><div class="sub" style="margin-top:5px">${esc(x.message||'Без комментария')}</div></div>`).join(''):'<div class="empty">Пока заявок нет.</div>'}
+let LEADS=[],LEAD_LV="";
+function renderLeads(){const box=el("leads");if(!TG||!ME||!ME.is_admin){box.innerHTML='<div class="empty">Доступно только наставнику.</div>';return}
+ box.innerHTML='<div class="empty">Загружаю…</div>';
+ fetch("/api/leads",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:TG.initData})}).then(r=>r.ok?r.json():Promise.reject(r.status))
+ .then(d=>{LEADS=d.leads||[];el("stTotal").textContent=d.stats.total;el("stToday").textContent=d.stats.today;el("stWeek").textContent=d.stats.week;el("stUsers").textContent=d.stats.users;drawLeads()})
+ .catch(()=>{box.innerHTML='<div class="empty">Не удалось загрузить заявки.</div>'})}
+function setLeadFilter(b){LEAD_LV=b.dataset.lv;document.querySelectorAll('#admin .chip').forEach(x=>x.classList.toggle("on",x===b));drawLeads()}
+function drawLeads(){const L=LEAD_LV?LEADS.filter(x=>x.level===LEAD_LV):LEADS;
+ el("leads").innerHTML=L.length?L.map(x=>{const d=new Date(x.created_at).toLocaleString("ru-RU",{timeZone:"Europe/Moscow",day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+  return '<div class="admin-card lead"><div class="lead-top"><b>'+esc(x.name||"Без имени")+'</b><span class="sub">'+esc(d)+'</span></div><span class="pill">'+esc(x.level)+'</span>'
+  +(x.username?'<div class="lead-row">@'+esc(x.username)+'</div>':'')+(x.phone?'<div class="lead-row">'+esc(fmtPhone(x.phone))+'</div>':'')
+  +(x.contact&&x.contact!=="@"+x.username&&x.contact!==fmtPhone(x.phone)?'<div class="lead-row sub">Указал: '+esc(x.contact)+'</div>':'')
+  +(x.username?'<button class="btn small" onclick="TG.openTelegramLink(\'https://t.me/'+encodeURIComponent(x.username)+'\')">✉️ Написать</button>':'<div class="sub" style="margin-top:8px">Ника нет — пиши по телефону</div>')+'</div>'}).join(""):'<div class="empty">Заявок пока нет.</div>'}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 /* ===== Telegram Mini App: автозаполнение профиля ===== */
 const TG=window.Telegram&&window.Telegram.WebApp&&window.Telegram.WebApp.initData?window.Telegram.WebApp:null;
@@ -176,6 +191,7 @@ function fillProfile(u){ME=u;const full=[u.first_name,u.last_name].filter(Boolea
  el("pfFacts").style.display="";
  el("pfText").textContent=u.registered?"Ты зарегистрирован ✅":"Поделись профилем, чтобы завершить регистрацию";
  el("pfShare").style.display=u.registered?"none":"";
+ el("adminBtn").style.display=u.is_admin?"":"none";
  // автозаполнение формы записи
  const n=el("name"),c=el("contact");if(n&&!n.value&&full)n.value=full;if(c&&!c.value)c.value=u.username?"@"+u.username:fmtPhone(u.phone);
  if(u.username&&!localStorage.getItem("veren_nick"))try{localStorage.setItem("veren_nick","@"+u.username)}catch(e){}}
@@ -291,5 +307,6 @@ main{flex:1;display:flex;flex-direction:column}
 .lvb{min-width:0;flex:1}.lvb b{font-size:clamp(12px,3.8vw,15px)!important}
 .topics{list-style:none;margin:10px 0 0;padding:0}.topics li{font-size:clamp(9px,2.7vw,11px);margin:5px 0;color:#efeaff;font-weight:600;line-height:1.35}
 .topics li::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:linear-gradient(105deg,#4f8cff,#ff4fd8);margin-right:8px;vertical-align:middle}
+.lead-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.lead .pill{display:inline-block;margin:8px 0 6px}.lead-row{margin-top:4px}#admin .lead .btn.small{margin-top:10px;font-size:10px!important;padding:9px 14px}
 </style></body>
 </html>
