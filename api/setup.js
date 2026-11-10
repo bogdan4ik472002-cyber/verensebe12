@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
   const hook = await tg("setWebhook", {
     url: `${base}/api/bot`,
     secret_token: process.env.WEBHOOK_SECRET,
-    allowed_updates: ["message"],
+    allowed_updates: ["message", "callback_query"],
     drop_pending_updates: true,
   });
   const menu = await tg("setChatMenuButton", {

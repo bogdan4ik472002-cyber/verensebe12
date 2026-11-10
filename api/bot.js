@@ -18,6 +18,17 @@ const appKb = () => ({
   inline_keyboard: [[{ text: "🎧 Открыть приложение", web_app: { url: WEBAPP_URL } }]],
 });
 
+const REVIEW_ASK =
+  "🎧 <b>Бесплатный разбор трека</b>\n\n" +
+  "Пришли сюда свой трек — файлом, ссылкой или голосовым. " +
+  "Я послушаю и отвечу, что круто и что подтянуть.";
+const REVIEW_KB = { inline_keyboard: [[{ text: "🎧 Бесплатный разбор трека", callback_data: "review" }]] };
+
+async function askForTrack(chat_id, uid) {
+  await redis("SET", `await_review:${uid}`, "1", "EX", 7 * 24 * 3600);
+  return tg("sendMessage", { chat_id, text: REVIEW_ASK, parse_mode: "HTML", reply_markup: { remove_keyboard: true } });
+}
+
 const isMedia = (m) => m.audio || m.voice || m.document || m.video || m.video_note;
 
 async function handle(m) {
@@ -35,6 +46,18 @@ async function handle(m) {
   if (text === "/unadmin") {
     await redis("SREM", "admins", String(m.from.id));
     return tg("sendMessage", { chat_id, text: "Больше не присылаю сюда заявки." });
+  }
+
+  // 1б) Пришёл по ссылке t.me/sebeverenbot?start=review или из кнопки в приложении
+  if (text === "/start review" || text === "/review") {
+    if (!(await getUser(m.from.id))) {
+      await redis("SET", `pending_review:${m.from.id}`, "1", "EX", 7 * 24 * 3600);
+      return tg("sendMessage", {
+        chat_id, parse_mode: "HTML", reply_markup: SHARE_KB,
+        text: "Привет! Разберу твой трек бесплатно 🎧\n\nСначала нажми <b>«Поделиться профилем»</b> внизу — так я буду знать, кому ответить.",
+      });
+    }
+    return askForTrack(chat_id, m.from.id);
   }
 
   // 2) Поделился контактом → регистрация
@@ -56,13 +79,20 @@ async function handle(m) {
       registered_at: (old && old.registered_at) || new Date().toISOString(),
     });
     await tg("sendMessage", { chat_id, text: "Готово, ты зарегистрирован ✅", reply_markup: { remove_keyboard: true } });
+    if ((await redis("GET", `pending_review:${m.from.id}`)) === "1") {
+      await redis("DEL", `pending_review:${m.from.id}`);
+      return askForTrack(chat_id, m.from.id);
+    }
     return tg("sendMessage", { chat_id, text: "Открывай приложение — профиль уже заполнен:", reply_markup: appKb() });
   }
 
   const user = await getUser(m.from.id);
 
-  // 3) Прислал аудио / файл / голосовое → это демка, пересылаем наставнику
-  if (isMedia(m)) {
+  const review = (await redis("GET", `await_review:${m.from.id}`)) === "1";
+  const isLink = review && /https?:\/\/\S+/i.test(text);
+
+  // 3) Прислал аудио / файл / голосовое (или ссылку на трек при разборе) → пересылаем наставнику
+  if (isMedia(m) || isLink) {
     const admins = await getAdmins();
     const who = user
       ? `${esc([user.first_name, user.last_name].filter(Boolean).join(" "))}` +
@@ -73,11 +103,18 @@ async function handle(m) {
       if (id === m.from.id) continue;
       await tg("sendMessage", {
         chat_id: id, parse_mode: "HTML",
-        text: `🎧 <b>Демка</b> от ${who}\n<a href="tg://user?id=${m.from.id}">Открыть профиль</a>`,
+        text: `${review ? "🆓 <b>Бесплатный разбор трека</b>" : "🎧 <b>Демка</b>"} от ${who}\n<a href="tg://user?id=${m.from.id}">Открыть профиль</a>`,
       });
       await tg("copyMessage", { chat_id: id, from_chat_id: chat_id, message_id: m.message_id });
     }
-    await redis("DEL", `await_demo:${m.from.id}`);
+    await redis("DEL", `await_demo:${m.from.id}`, `await_review:${m.from.id}`);
+    if (review) {
+      return tg("sendMessage", {
+        chat_id,
+        text: "Трек у меня 🔥 Послушаю и отвечу сюда.\n\nА пока — приходи на бесплатный урок: познакомимся и разберём твою музыку вживую.",
+        reply_markup: appKb(),
+      });
+    }
     return tg("sendMessage", {
       chat_id,
       text: "Демка получена 🔥 Наставник послушает и напишет тебе.",
@@ -86,8 +123,9 @@ async function handle(m) {
   }
 
   // 4) Любой другой текст
+  if (review) return tg("sendMessage", { chat_id, text: "Жду трек 🎧 Пришли файл, ссылку или голосовое." });
   if (user) {
-    return tg("sendMessage", { chat_id, text: "С возвращением! Открывай приложение 👇", reply_markup: appKb() });
+    return tg("sendMessage", { chat_id, text: "С возвращением! Открывай приложение 👇", reply_markup: { inline_keyboard: [...appKb().inline_keyboard, ...REVIEW_KB.inline_keyboard] } });
   }
   return tg("sendMessage", { chat_id, text: WELCOME, parse_mode: "HTML", reply_markup: SHARE_KB });
 }
@@ -97,6 +135,15 @@ module.exports = async (req, res) => {
   if (req.method !== "POST" ||
       req.headers["x-telegram-bot-api-secret-token"] !== process.env.WEBHOOK_SECRET) {
     return res.status(403).send("forbidden");
+  }
+  const cq = req.body && req.body.callback_query;
+  if (cq && cq.data === "review" && cq.message) {
+    try {
+      await tg("answerCallbackQuery", { callback_query_id: cq.id });
+      if (await getUser(cq.from.id)) await askForTrack(cq.message.chat.id, cq.from.id);
+      else await handle({ ...cq.message, from: cq.from, text: "/review", contact: undefined });
+    } catch (e) { console.error(e); }
+    return res.status(200).send("ok");
   }
   const m = req.body && req.body.message;
   if (m && m.from && m.chat.type === "private") {

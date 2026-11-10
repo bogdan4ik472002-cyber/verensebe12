@@ -56,9 +56,9 @@ header{padding:26px 22px 8px!important}.logo{font-size:21px!important;white-spac
 <main>
 <section id="home" class="page active">
  <div class="hero" style="padding-bottom:0"><h1 class="pitch">От первой <span class="vio">демки</span><br>до первого <span class="vio">выступления</span><br>за <span class="fire">4</span> занятия</h1><div class="vid"><video id="heroVid" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture disableremoteplayback controlslist="nodownload nofullscreen noremoteplayback" preload="auto" src="/assets/hero.mp4" poster="/assets/hero-poster.jpg"></video><div id="vcover"></div><button type="button" id="vMute" class="vmute" aria-label="Звук"></button></div></div>
- <div class="hero" style="padding-top:14px"><button class="btn" onclick="go('booking')">Записаться <span>↗</span></button></div>
- <div class="section"><h2>Твой искренний наставник</h2><div class="feature mentor" style="margin-top:13px"><div class="avatar photo"><img src="/assets/mentor.jpg" alt="Верен себе"></div><div class="mbody"><b>Верен себе</b><ul class="facts"><li>6 лет в музыке</li><li>Делал свои концерты</li><li>Знаю, как продвигать своё творчество</li></ul></div></div></div>
- <div class="section"><button class="btn secondary soloud" onclick="pickLevel('studio')">Студия SO LOUD · Королёв</button></div>
+ <div class="hero home-cta" style="padding-top:14px"><button class="btn" onclick="go('booking')">Записаться на бесплатный урок <span>↗</span></button><button class="btn btn-green" onclick="freeReview()">🎧 Бесплатный разбор трека</button></div>
+ <div class="section home-mentor" hidden><h2>Твой искренний наставник</h2><div class="feature mentor" style="margin-top:13px"><div class="avatar photo"><img src="/assets/mentor.jpg" alt="Верен себе"></div><div class="mbody"><b>Верен себе</b><ul class="facts"><li>6 лет в музыке</li><li>Делал свои концерты</li><li>Знаю, как продвигать своё творчество</li></ul></div></div></div>
+ <div class="section home-studio"><button class="btn secondary soloud" onclick="pickLevel('studio')">Студия SO LOUD · Королёв</button></div>
 </section>
 <section id="booking" class="page"><div class="section">
 <div id="bookStep1"><div class="eyebrow">ЗАПИСЬ</div><h2 class="hd">Записаться на первый <span class="grn">бесплатный</span> урок</h2>
@@ -217,6 +217,8 @@ function shareContact(){if(!TG||!TG.requestContact){toast("Открой прил
  TG.requestContact(function(ok){if(!ok){toast("Без этого регистрация не завершится");return}
   toast("Сохраняю профиль…");let n=0;(function poll(){loadMe().then(u=>{if(u&&u.registered){toast("Профиль заполнен ✅")}else if(++n<6)setTimeout(poll,1000)})})()})}
 if(TG){TG.ready();TG.expand();try{TG.setHeaderColor("#07091a");TG.setBackgroundColor("#07091a")}catch(e){}loadMe()}
+function freeReview(){const u="https://t.me/sebeverenbot?start=review";
+ if(TG){try{TG.openTelegramLink(u)}catch(e){location.href=u}setTimeout(()=>{try{TG.close()}catch(e){}},400)}else{window.open(u,"_blank")}}
 function exportLeads(){const a=getLeads();const blob=new Blob([JSON.stringify(a,null,2)],{type:'application/json'});const u=URL.createObjectURL(blob);const x=document.createElement('a');x.href=u;x.download='music-education-leads.json';x.click();URL.revokeObjectURL(u)}
 </script><style>
 :root{--cyan:#b44dff;--orange:#ff4fd8;--grad:linear-gradient(105deg,#4f8cff 0%,#9b5cff 50%,#ff4fd8 100%)}
@@ -399,6 +401,9 @@ main{flex:1;display:flex;flex-direction:column}
 .wv-head h2{flex:1;min-width:0}.wv-head .btn.small{white-space:nowrap;flex:0 0 auto}
 #profile .section .section{padding-left:0!important;padding-right:0!important}
 #admin .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-4px!important;margin-right:-4px!important;padding:0 4px}#admin .chips::-webkit-scrollbar{display:none}#admin .chip{white-space:nowrap;flex:0 0 auto}
+.btn-green{margin-top:10px!important;background:linear-gradient(100deg,#1fd67a 0%,#2ee6a0 45%,#b8f05a 100%)!important;color:#06140c!important;box-shadow:0 8px 26px rgba(46,230,160,.28)!important}
+.btn-green:hover{filter:brightness(1.07)}
+
 /* ===== ЕДИНАЯ ТИПОГРАФИКА: один шрифт, 5 размеров ===== */
 :root{--f:'Unbounded','Arial Black',Arial,sans-serif;
  --t1:clamp(17px,5vw,20px);   /* заголовок страницы */
@@ -674,17 +679,6 @@ if(new URLSearchParams(location.search).get("p")==="wave"||location.hash.indexOf
  .app{max-width:var(--w)!important;border:0!important}
  header{padding:30px 40px 10px!important}.logo{font-size:17px!important}
  .hero,#home .hero,.section,#home .section,.detail,.back{padding-left:40px!important;padding-right:40px!important}
- /* главная: текст и кнопка слева, видео справа */
- #home.active{display:grid;grid-template-columns:1.05fr 1fr;column-gap:48px;align-items:start;padding-top:30px}
- #home .hero:first-child{display:contents}
- #home .hero h1.pitch{grid-column:1;grid-row:1;font-size:clamp(28px,3vw,38px)!important;line-height:1.2!important;margin:10px 0 28px!important;padding-left:40px;overflow-wrap:normal!important;word-break:keep-all}
- #home .hero h1.pitch *{overflow-wrap:normal!important}
- #home .vid{grid-column:2;grid-row:1/span 4;margin-right:40px;margin-top:10px}
- #home .hero:nth-child(2){grid-column:1;grid-row:2;padding-top:0!important}
- #home .hero:nth-child(2) .btn{width:auto;min-width:280px}
- #home .section:nth-child(3){grid-column:1;grid-row:3;padding-top:44px!important}
- #home .section:nth-child(4){grid-column:1;grid-row:4;padding-top:16px!important}
- #home .section:nth-child(4) .btn{width:auto}
  /* запись: три уровня в ряд */
  #bookStep1 .hd,#bookStep1 .intro,#bookStep1 .eyebrow{max-width:760px}
  #bookStep1 .levels{grid-template-columns:repeat(3,1fr)!important;gap:18px!important;margin-top:10px}
@@ -725,5 +719,29 @@ if(new URLSearchParams(location.search).get("p")==="wave"||location.hash.indexOf
  .nav{width:min(720px,100%)!important;border:1px solid var(--line);border-bottom:0;border-radius:18px 18px 0 0}
 }
 
+</style><style>
+/* ===== ГЛАВНАЯ в стиле Apple: заголовок → кнопки → видео ===== */
+.home-mentor[hidden]{display:none!important}
+#home.active{display:flex!important;flex-direction:column;align-items:center;text-align:center;padding-bottom:20px}
+#home .hero:first-child{display:contents}
+#home .hero h1.pitch{order:1;width:100%;box-sizing:border-box;padding:0 20px;text-align:center!important;margin:22px auto 0!important;max-width:none;line-height:1.18!important;font-size:clamp(21px,6.4vw,28px)!important}
+#home .home-cta{order:2;width:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:10px;padding:26px 20px 0!important}
+#home .home-cta .btn{width:100%;margin:0!important;height:54px;border-radius:16px!important;display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;letter-spacing:.02em!important;font-size:clamp(10px,3vw,11.5px)!important}
+#home .vid{order:3;width:calc(100% - 40px)!important;margin:30px auto 0!important;border-radius:22px!important;overflow:hidden;box-shadow:0 30px 70px -20px rgba(110,60,255,.45),0 0 0 1px rgba(255,255,255,.06)}
+#home .home-studio{order:4;height:70px;padding:0!important}
+#home .home-studio .btn{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(78px + env(safe-area-inset-bottom));z-index:5;width:auto!important;height:auto;padding:11px 18px!important;border-radius:999px!important;background:rgba(18,14,44,.72)!important;backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid rgba(255,255,255,.14)!important;box-shadow:0 10px 30px rgba(0,0,0,.35)!important;color:var(--text)!important;font-size:var(--t5)!important;letter-spacing:.08em!important;white-space:nowrap;text-decoration:none;transition:transform .2s,background .2s}
+#home .home-studio .btn::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#2ee6a0;box-shadow:0 0 8px #2ee6a0;margin-right:8px;vertical-align:1px}
+#home .home-studio .btn:hover{background:rgba(40,30,90,.85)!important}
+#home .home-studio .btn:active{transform:translateX(-50%) scale(.96)}
+#home:not(.active) .home-studio .btn{display:none}
+.has-mini #home .home-studio .btn{bottom:calc(148px + env(safe-area-inset-bottom))}
+@media (min-width:900px){
+ #home.active{padding:50px 0 30px}
+ #home .hero h1.pitch{font-size:clamp(36px,3.6vw,46px)!important;margin-top:10px!important;max-width:980px}
+ #home .home-cta{flex-direction:row;justify-content:center;gap:14px;padding-top:34px!important}
+ #home .home-cta .btn{width:auto!important;min-width:300px;padding:0 30px!important;height:58px;font-size:var(--t3)!important}
+ #home .vid{max-width:760px;aspect-ratio:16/9!important;height:auto!important;border-radius:28px!important;margin-top:46px!important}
+ #home .vid video{width:100%;height:100%;object-fit:cover}
+}
 </style></body>
 </html>
