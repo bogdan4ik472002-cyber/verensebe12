@@ -38,7 +38,7 @@ h1,h2,h3{letter-spacing:0!important}.pitch{font-size:19px;line-height:1.2}.detai
 /* smaller text */
 body{font-size:10px}.pitch{font-size:15px;line-height:1.25}.detail h1{font-size:17px}.section h2{font-size:12px}.booking-hero h3{font-size:14px}.logo{font-size:14px}.btn{font-size:10px}.level b,.course b{font-size:11px}.feature strong{font-size:10px}.price{font-size:17px}.level small,.course small,.sub,.feature p,.mentor p,.muted,.quote,.notice{font-size:9px}.brandline,.eyebrow,.tag,.pill,.free-badge{font-size:8px}.nav button{font-size:8px}.field{font-size:10px}#soundBtn{font-size:10px!important}
 .hero h1.pitch{display:block;width:100%;max-width:100%;white-space:normal;overflow-wrap:break-word;text-wrap:balance;font-size:clamp(15px,4.2vw,22px);line-height:1.4;letter-spacing:0;margin:0 0 12px}
-.fire{display:inline-block;font-size:1.35em;line-height:1;font-weight:900;background:linear-gradient(180deg,#c7a1ff 0%,#a35cff 50%,#6840df 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 7px rgba(163,92,255,.45))}</style>
+.fire{display:inline-block;font-size:1.35em;line-height:1;font-weight:900;padding:0 .04em;background:linear-gradient(100deg,#5b8cff 0%,#a855ff 50%,#ff4fd8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}</style>
 <style>#heroVid::-webkit-media-controls,#heroVid::-webkit-media-controls-panel,#heroVid::-webkit-media-controls-start-playback-button,#heroVid::-webkit-media-controls-overlay-play-button{display:none!important;-webkit-appearance:none}#heroVid{width:100%;display:block}</style><style>
 header{padding:26px 22px 8px!important}.logo{font-size:21px!important;white-space:nowrap}.tag{font-size:9px!important;padding:6px 10px!important}
 #home .hero{padding-left:22px;padding-right:22px}#home .pitch{margin:6px 0 24px!important}
@@ -56,7 +56,7 @@ header{padding:26px 22px 8px!important}.logo{font-size:21px!important;white-spac
 <main>
 <section id="home" class="page active">
  <div class="hero" style="padding-bottom:0"><h1 class="pitch">От первой <span class="vio">демки</span><br>до первого <span class="vio">выступления</span><br>за <span class="fire">4</span> занятия</h1><div class="vid"><video id="heroVid" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture disableremoteplayback controlslist="nodownload nofullscreen noremoteplayback" preload="auto" src="/assets/hero.mp4" poster="/assets/hero-poster.jpg"></video><div id="vcover"></div><button type="button" id="vMute" class="vmute" aria-label="Звук"></button></div></div>
- <div class="hero home-cta" style="padding-top:14px"><button class="btn" onclick="go('booking')">Записаться на бесплатный урок <span>↗</span></button><button class="btn btn-green" onclick="freeReview()">🎧 Бесплатный разбор трека</button></div>
+ <div class="hero home-cta" style="padding-top:14px"><button class="btn" onclick="go('booking')">Записаться на бесплатный урок <span>↗</span></button><button class="btn btn-green" onclick="freeReview()">Разбор трека <span>🎧</span></button></div>
  <div class="section home-mentor" hidden><h2>Твой искренний наставник</h2><div class="feature mentor" style="margin-top:13px"><div class="avatar photo"><img src="/assets/mentor.jpg" alt="Верен себе"></div><div class="mbody"><b>Верен себе</b><ul class="facts"><li>6 лет в музыке</li><li>Делал свои концерты</li><li>Знаю, как продвигать своё творчество</li></ul></div></div></div>
  <div class="section home-studio"><button class="btn secondary soloud" onclick="pickLevel('studio')">Студия SO LOUD · Королёв</button></div>
 </section>
@@ -401,8 +401,8 @@ main{flex:1;display:flex;flex-direction:column}
 .wv-head h2{flex:1;min-width:0}.wv-head .btn.small{white-space:nowrap;flex:0 0 auto}
 #profile .section .section{padding-left:0!important;padding-right:0!important}
 #admin .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-4px!important;margin-right:-4px!important;padding:0 4px}#admin .chips::-webkit-scrollbar{display:none}#admin .chip{white-space:nowrap;flex:0 0 auto}
-.btn-green{margin-top:10px!important;background:linear-gradient(100deg,#1fd67a 0%,#2ee6a0 45%,#b8f05a 100%)!important;color:#06140c!important;box-shadow:0 8px 26px rgba(46,230,160,.28)!important}
-.btn-green:hover{filter:brightness(1.07)}
+.btn-green{margin-top:10px!important;border:2px solid transparent!important;background:linear-gradient(#0b0d24,#0b0d24) padding-box,linear-gradient(100deg,#22e58f 0%,#10b981 45%,#2dd4bf 100%) border-box!important;color:#fff!important;box-shadow:0 0 0 rgba(0,0,0,0)!important}
+
 
 /* ===== ЕДИНАЯ ТИПОГРАФИКА: один шрифт, 5 размеров ===== */
 :root{--f:'Unbounded','Arial Black',Arial,sans-serif;
@@ -742,6 +742,20 @@ if(new URLSearchParams(location.search).get("p")==="wave"||location.hash.indexOf
  #home .home-cta .btn{width:auto!important;min-width:300px;padding:0 30px!important;height:58px;font-size:var(--t3)!important}
  #home .vid{max-width:760px;aspect-ratio:16/9!important;height:auto!important;border-radius:28px!important;margin-top:46px!important}
  #home .vid video{width:100%;height:100%;object-fit:cover}
+}
+</style><style>
+/* ===== свечение кнопок при наведении мышкой ===== */
+@media (hover:hover){
+ .btn,.tc-pp,.mini-b.pp,.np-ctrl .pp,.chip,.level,.tc,.vmute,.tg,.home-studio .btn{transition:box-shadow .25s ease,filter .25s ease,transform .25s ease,background .25s ease,border-color .25s ease!important}
+ .btn:hover{box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 26px rgba(168,85,255,.55),0 0 60px rgba(255,79,216,.25)!important;filter:brightness(1.08);transform:translateY(-1px)}
+ .btn.secondary:hover{box-shadow:0 0 22px rgba(168,85,255,.4)!important}
+ .btn-green:hover{box-shadow:0 0 26px rgba(34,229,143,.5),0 0 60px rgba(45,212,191,.22)!important;background:linear-gradient(rgba(16,185,129,.16),rgba(16,185,129,.16)) padding-box,linear-gradient(#0b0d24,#0b0d24) padding-box,linear-gradient(100deg,#22e58f 0%,#10b981 45%,#2dd4bf 100%) border-box!important;filter:none}
+ #home .home-studio .btn:hover{box-shadow:0 0 22px rgba(46,230,160,.35)!important;transform:translateX(-50%) translateY(-1px)}
+ .tc-pp:hover,.mini-b.pp:hover{box-shadow:0 0 20px rgba(168,85,255,.6)!important;filter:brightness(1.1)}
+ .np-ctrl .pp:hover{box-shadow:0 0 30px rgba(255,255,255,.45)!important}
+ .chip:hover{box-shadow:0 0 16px rgba(168,85,255,.35)}
+ .vmute:hover,.tg:hover{box-shadow:0 0 16px rgba(168,85,255,.5)}
+ .level:hover,.tc:hover{box-shadow:0 0 0 1px rgba(200,150,255,.35),0 10px 40px rgba(120,60,255,.25)!important}
 }
 </style></body>
 </html>
